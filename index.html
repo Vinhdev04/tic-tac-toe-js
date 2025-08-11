@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="/tic-tac-toe/190322_game_tac_tic_toe_icon.png"
+      type="image/x-icon"
+    />
+    <title>Tic Tac Toe - Enhanced</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1><i class="fas fa-gamepad"></i> Tic Tac Toe</h1>
+
+      <div class="user-info">
+        <div class="winner">
+          <span class="message">🎮 Make your move!</span>
+        </div>
+
+        <div class="user-mode">
+          <button id="human-vs-human" class="active">
+            <i class="fas fa-users"></i> Human vs Human
+          </button>
+          <button id="vs-computer">
+            <i class="fas fa-robot"></i> vs Computer
+          </button>
+        </div>
+
+        <p class="current-player">
+          🎯 Player Winner: <span class="player-winnerX"></span>
+        </p>
+      </div>
+
+      <div class="game">
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+      </div>
+
+      <div class="control-btns">
+        <button id="new-game"><i class="fas fa-play"></i> New Game</button>
+        <button id="clear-score">
+          <i class="fas fa-trophy"></i> Clear Score
+        </button>
+      </div>
+
+      <div class="score-board">
+        <h3><i class="fas fa-medal"></i> Score Board</h3>
+        <div class="score-item">
+          <span><i class="fas fa-user"></i> Player X:</span>
+          <span id="score-x">0</span>
+        </div>
+        <div class="score-item">
+          <span><i class="fas fa-user"></i> Player O:</span>
+          <span id="score-o">0</span>
+        </div>
+        <div class="score-item">
+          <span><i class="fas fa-handshake"></i> Draws:</span>
+          <span id="score-draw">0</span>
+        </div>
+      </div>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
