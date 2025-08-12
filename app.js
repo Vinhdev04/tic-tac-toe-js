@@ -4,6 +4,11 @@ const clearScoreBtn = document.getElementById("clear-score");
 const modehumanVsHuman = document.getElementById("human-vs-human");
 const modeVsComputer = document.getElementById("vs-computer");
 
+const currentWinner = document.querySelector(".player-winnerX");
+const scoreX = document.getElementById("score-x");
+const scoreO = document.getElementById("score-o");
+const scoreDraw = document.getElementById("score-draw"); // Đổi draw thành scoreDraw để đồng bộ
+
 // default player1: X, Player2: O
 let player = true; // True: X, False: O
 const winnerPatterns = [
@@ -17,10 +22,9 @@ const winnerPatterns = [
   [2, 4, 6],
 ];
 
-// Gán sự kiện click cho các ô
+// Sự kiện click cho các ô
 boxes.forEach((box) => {
-  box.addEventListener("click", (e) => {
-    // console.log("Box clicked:", e.target);
+  box.addEventListener("click", () => {
     if (player) {
       box.innerText = "X";
       player = false;
@@ -28,35 +32,27 @@ boxes.forEach((box) => {
       box.innerText = "O";
       player = true;
     }
-    box.disabled = true; // Vô hiệu hóa ô đã click
+    box.disabled = true;
 
-    // Gọi hàm kiểm tra người chiến thắng
     checkWinner();
     checkDraw();
   });
 });
 
-// Bắt đâu game mới
+// Reset game (không reset điểm)
 const resetGame = () => {
-  player = true; // Reset về người chơi X
-
-  // Xóa hết nội dung các ô
+  player = true;
   boxes.forEach((box) => {
     box.innerText = "";
-    box.disabled = false; // Mở khóa ô để chơi lại
-    box.classList.remove("pattern-winner"); // Xóa hiệu ứng thắng
+    box.disabled = false;
+    box.classList.remove("pattern-winner");
   });
-
-  // Xóa thông báo người thắng
-  const currentWinner = document.querySelector(".player-winnerX");
   currentWinner.innerText = "";
-
-  // Nếu muốn reset điểm thì xử lý ở đây (nếu không thì giữ nguyên)
 };
 
 newGameBtn.addEventListener("click", resetGame);
 
-// kiểm tra người chiến thắng
+// Kiểm tra thắng
 const checkWinner = () => {
   for (let pattern of winnerPatterns) {
     let [a, b, c] = pattern;
@@ -65,48 +61,37 @@ const checkWinner = () => {
     let pos3 = boxes[c].innerText;
 
     if (pos1 !== "" && pos1 === pos2 && pos2 === pos3) {
-      // console.log(pos1, pos2, pos3);
-      // console.log(pattern);
-
-      // Đánh dấu ô chiến thắng
       boxes[a].classList.add("pattern-winner");
       boxes[b].classList.add("pattern-winner");
       boxes[c].classList.add("pattern-winner");
 
-      // Hiển thị người thắng
       showWinner(pos1);
-
-      return; // thoát khỏi hàm khi đã tìm ra người thắng
+      return;
     }
   }
 };
 
+// Kiểm tra hòa
 const checkDraw = () => {
-  // Kiểm tra tất cả ô đã được đánh (không còn ô trống)
+  // kiểm tra xem tất cả các ô đã được điền chưa
   const allFilled = [...boxes].every((box) => box.innerText !== "");
-
-  if (allFilled) {
-    // Nếu đã đầy ô và chưa ai thắng thì là hòa
-    const draw = document.getElementById("score-draw");
-    const currentWinner = document.querySelector(".player-winnerX");
-
+  if (allFilled && !winnerFound()) {
     currentWinner.innerText = "Draw";
-    draw.innerText = parseInt(draw.innerText) + 1;
-    localStorage.setItem("Draw", draw.innerText);
-
-    // Vô hiệu hóa các ô để kết thúc game
+    scoreDraw.innerText = parseInt(scoreDraw.innerText) + 1;
+    localStorage.setItem("Draw", scoreDraw.innerText);
     disabledBtn();
   }
 };
 
-// Hien thi nguoi chien thang
+// Hàm phụ kiểm tra có người thắng chưa
+const winnerFound = () => {
+  // k
+  return [...boxes].some((box) => box.classList.contains("pattern-winner"));
+};
+
+// Hiển thị người thắng
 const showWinner = (winner) => {
-  const currentWinner = document.querySelector(".player-winnerX");
-  const scoreX = document.getElementById("score-x");
-  const scoreO = document.getElementById("score-o");
-
   currentWinner.innerText = winner;
-
   if (winner === "X") {
     scoreX.innerText = parseInt(scoreX.innerText) + 1;
     localStorage.setItem("Player1", scoreX.innerText);
@@ -114,13 +99,47 @@ const showWinner = (winner) => {
     scoreO.innerText = parseInt(scoreO.innerText) + 1;
     localStorage.setItem("Player2", scoreO.innerText);
   }
-
-  // Vô hiệu hóa các ô còn lại để kết thúc game
   disabledBtn();
 };
 
+// Vô hiệu hóa toàn bộ ô
 const disabledBtn = () => {
-  for (let btn of boxes) {
-    btn.disabled = true;
-  }
+  boxes.forEach((btn) => (btn.disabled = true));
 };
+
+// Bật lại toàn bộ ô
+const enableBtn = () => {
+  boxes.forEach((btn) => (btn.disabled = false));
+};
+
+// Chế độ chơi với máy (sẽ viết sau)
+const playVsComputer = () => {};
+
+// Lưu điểm vào LocalStorage
+const saveScores = () => {
+  localStorage.setItem("Player1", scoreX.innerText);
+  localStorage.setItem("Player2", scoreO.innerText);
+  localStorage.setItem("Draw", scoreDraw.innerText);
+};
+
+// Xóa điểm
+const removeScore = () => {
+  localStorage.removeItem("Player1");
+  localStorage.removeItem("Player2");
+  localStorage.removeItem("Draw");
+  scoreX.innerText = "0";
+  scoreO.innerText = "0";
+  scoreDraw.innerText = "0";
+};
+
+// Load điểm khi bắt đầu
+const loadScore = () => {
+  scoreX.innerText = localStorage.getItem("Player1") || "0";
+  scoreO.innerText = localStorage.getItem("Player2") || "0";
+  scoreDraw.innerText = localStorage.getItem("Draw") || "0";
+};
+
+// Xử lý reest điểm
+clearScoreBtn.addEventListener("click", removeScore);
+
+loadScore();
